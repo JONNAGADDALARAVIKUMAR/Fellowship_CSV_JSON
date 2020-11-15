@@ -1,0 +1,46 @@
+{
+  "Friend": {
+    "Karthik": {
+      "firstName": "Karthik",
+      "lastName": "Jinka",
+      "address": "Dharmavaram",
+      "city": "Vijayawada",
+      "state": "AP",
+      "zip": "678783",
+      "phoneNumber": "574839938",
+      "emailId": "karthik@gmail.com"
+    }
+  },
+  "Family": {
+    "Ravi": {
+      "firstName": "Ravi",
+      "lastName": "Kumar",
+      "address": "Parnapalli",
+      "city": "Banglore",
+      "state": "KS",
+      "zip": "647382",
+      "phoneNumber": "685940300",
+      "emailId": "ravi@gmail.com"
+    },
+    "Uma": {
+      "firstName": "Uma",
+      "lastName": "Jonnagaddala",
+      "address": "Parnapalli",
+      "city": "Chennai",
+      "state": "TN",
+      "zip": "678743",
+      "phoneNumber": "6574839298",
+      "emailId": "uma@gmail.com"
+    },
+    "Naidu": {
+      "firstName": "Naidu",
+      "lastName": "Jonnagadala",
+      "address": "Parnapalli",
+      "city": "Banglore",
+      "state": "KS",
+      "zip": "743883",
+      "phoneNumber": "574839",
+      "emailId": "naidu@gmail.com"
+    }
+  }
+}

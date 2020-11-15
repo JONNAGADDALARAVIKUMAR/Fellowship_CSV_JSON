@@ -1,14 +1,17 @@
 package addressBookCSV_JSON.csv;
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.KeyStore.Entry;
 import java.util.HashMap;
 import java.util.Scanner;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
@@ -18,6 +21,8 @@ public class AddressBookMainClass
 	static AddressBookManupulator friendsAddressBook = new AddressBookManupulator();//Friends Address Book
 	static Scanner scan = new Scanner(System.in);
 	private static final String AllContactsFile = "C:\\Users\\Admin\\workspace\\csv\\src\\main\\resources\\allDetails.csv";
+	private static final String AllContactsJsonFile = "C:\\Users\\Admin\\workspace\\csv\\src\\main\\resources\\jsonFile.json";
+	static HashMap<String, HashMap<String, DetailsCollector>> addressBook = new HashMap<>();
 	
 	public static void main(String[] args) throws IOException {
 		
@@ -25,18 +30,16 @@ public class AddressBookMainClass
 		HashMap<String, HashMap> addressBooks = new HashMap<String, HashMap>();//Stores Multiple Address Books
 		HashMap<String, DetailsCollector> oneListContacts = new HashMap<String, DetailsCollector>();//Stores Single AddressBook
 		
-		
 		System.out.println("\n\tWelcome to Address Book Progrem");
-		
-		
-	       
+		   
 	    while (true) {
 	        System.out.println("\n1: for family \n" +
 	        					 "2: for friend \n" +
 	                    		 "3: To Search\n" +
 	        					 "4: TO Sort\n" +
 	        					 "5: To Read CSV\n" +
-	        					 "6: To Terminate");
+	        					 "6: To Read JSON\n" +
+	        					 "7: To Terminate");
 	        int selectedOption = scan.nextInt();
 	            
 	        switch (selectedOption) {
@@ -44,11 +47,13 @@ public class AddressBookMainClass
 	        	oneListContacts = familyAddressBook.userChoice();
 	            addressBooks.put("Family", oneListContacts);
 	            addToCsv(addressBooks);
+	            addToJson(addressBooks);
 	            break;
 	        case 2:
 	        	oneListContacts = friendsAddressBook.userChoice();	
 	        	addressBooks.put("Friend", oneListContacts);   
 	        	addToCsv(addressBooks);
+	        	addToJson(addressBooks);
 	        	break;
 	        case 3:
 	        	search();
@@ -60,10 +65,13 @@ public class AddressBookMainClass
 	        	readCsv();
 	        	break;
 	        case 6:
+	        	readJson();
+	        	break;
+	        case 7:
 	        	System.out.println("\n\tTerminated");
 	        	break;
 	        } 
-	        if(selectedOption == 6)
+	        if(selectedOption == 7)
 	        	break;
 	    }
 	}
@@ -147,7 +155,7 @@ public class AddressBookMainClass
 			}
 		}
 	}
-	private static void addToCsv(HashMap<String, HashMap> addressBooks) throws IOException {
+	private static void addToCsv(HashMap<String, HashMap> addressBooks) throws IOException { //Writes Data to the CSV file
 	
 		try (
 			Writer writer = Files.newBufferedWriter(Paths.get(AllContactsFile));
@@ -177,7 +185,7 @@ public class AddressBookMainClass
 	         }
 		}
 	}
-	private static void readCsv() {
+	private static void readCsv() { //Reads Data from CSV file
 		try {
 			FileReader fileReader = new FileReader(AllContactsFile);
 			CSVReader csvReader = new CSVReader(fileReader);
@@ -185,7 +193,7 @@ public class AddressBookMainClass
 			while((nextRecord = csvReader.readNext()) != null) {
 				for(int index = 0; index < nextRecord.length; index++) {
 					
-						System.out.print(nextRecord[index]+",  ");
+						System.out.print(nextRecord[index]+", ");
 				}
 				System.out.println();
 			}
@@ -193,5 +201,53 @@ public class AddressBookMainClass
 			e.printStackTrace();
 		}
 	}
+	
+	private static void addToJson(HashMap<String, HashMap> addressBooks) throws IOException { //Writes Data to the JSON file
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		Gson gson = gsonBuilder.setPrettyPrinting().create();
+		String json = gson.toJson(addressBooks);
+		
+		
+		try (FileWriter file = new FileWriter(AllContactsJsonFile)) {      	 
+			 file.write(json);
+			 file.flush();
+		}	 
+	}
+	
+	private static void readJson() {
+		Gson gson = new Gson();
+		
+		try(FileReader fileReader = new FileReader(AllContactsJsonFile)) {
+			Type type = new TypeToken<HashMap<String, HashMap<String, DetailsCollector>>>() {}.getType();
+			addressBook = gson.fromJson(fileReader, type);	
+			if(addressBook.containsKey("Family")) {
+				HashMap<String, DetailsCollector> family = addressBook.get("Family");
+				System.out.println("--------Family Contacts--------");
+				printJson(family);
+			} else System.out.println("Family AddressBook is Empty");
+			
+			if(addressBook.containsKey("Friend")) {
+				HashMap<String, DetailsCollector> friends = addressBook.get("Friend");
+				System.out.println("--------Friends Contacts--------");
+				printJson(friends);
+			} else System.out.println("Friends Address Book is Empty");
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 
+	private static void printJson(HashMap<String, DetailsCollector> contacts) {
+		if(!contacts.isEmpty())
+		for(DetailsCollector familyContacts : contacts.values()) {
+			System.out.println("\n\tFirst Name :"+familyContacts.getFirstName()+
+								"\n\tLast Name :"+familyContacts.getLastName()+
+								"\n\tAddress :"+familyContacts.getAddress()+
+								"\n\tCity :"+familyContacts.getCity()+
+								"\n\tState :"+familyContacts.getState()+
+								"\n\tZIP :"+familyContacts.getZip()+
+								"\n\tPhone Number :"+familyContacts.getPhoneNumber()+
+								"\n\tEmail :"+familyContacts.getEmailId()+"\n\n");
+		}
+	}
 }

@@ -13,37 +13,34 @@ public class AddressBookManupulator {
 	HashMap<String, DetailsCollector> contacts = new HashMap<String, DetailsCollector>();
 	
 	static Scanner scanner = new Scanner(System.in);
-	String mail;
+	String name;
 	
 	int choice = 1;
 	public HashMap<String, DetailsCollector> userChoice() {
 		
 		while(choice != 5) {
+			if(!contacts.isEmpty()) {
+				
+				System.out.print("\n1.Create New Contact\n2.Read Existing Contact\n3.Update Existing Contact\n4.Delete Existing Contact\n5.Exit\nOption : ");
+				choice = scanner.nextInt();
+			}
 			switch (choice) {
 			
 				case 1://Adds contact
 					System.out.println("Add new Contact");
 					DetailsCollector collect = getUserInput();
-					contacts.put(collect.getEmailId(), collect);
-					System.out.print("\n1.Create New Contact\n2.Read Existing Contact\n3.Update Existing Contact\n4.Delete Existing Contact\n5.Exit\nOption : ");
-					choice = scanner.nextInt();
+					contacts.put(collect.getFirstName(), collect);
 					break;
 					
 				case 2: //Reads Contact
 					readContacts();
-					System.out.print("\n1.Create New Contact\n2.Read Existing Contact\n3.Update Existing Contact\n4.Delete Existing Contact\n5.Exit\nOption : ");
-					choice = scanner.nextInt();
 					break;
 
 				case 3: //Updates Contact
 					updateContacts();
-					System.out.print("\n1.Create New Contact\n2.Read Existing Contact\n3.Update Existing Contact\n4.Delete Existing Contact\n5.Exit\nOption : ");
-					choice = scanner.nextInt();
 					break;
 				case 4: //Deletes Contact
 					deleteContacts();
-					System.out.print("\n1.Create New Contact\n2.Read Existing Contact\n3.Update Existing Contact\n4.Delete Existing Contact\n5.Exit\nOption : ");
-					choice = scanner.nextInt();
 					break;
 				
 				case 5: //Terminates Program
@@ -65,7 +62,7 @@ public class AddressBookManupulator {
 	private DetailsCollector getUserInput() { //Takes Input from User
 		
 		 	System.out.print("First Name : ");
-	        String firstName = scanner.next();
+	        String firstName = getFirstName();
 	        System.out.print("Last Name : ");
 	        String lastName = scanner.next();
 	        System.out.print("Address : ");
@@ -79,7 +76,7 @@ public class AddressBookManupulator {
 	        System.out.print("Phone Number : ");
 	        String phone = scanner.next();
 	        System.out.print("Email : ");
-	        String email = getmail();
+	        String email = scanner.next();
 	        
 	        DetailsCollector collect = new DetailsCollector(); //POJO class
 	        
@@ -95,19 +92,18 @@ public class AddressBookManupulator {
 	        return collect;
 	}
 	
-	private String getmail() {
+	private String getFirstName() {
 		boolean check = true;
 		
 		while(check) {
-			mail = scanner.next();
-			if(contacts.containsKey(mail))
-				System.out.print("\nContact Exist\nEmail : ");
+			name = scanner.next();
+			if(contacts.containsKey(name))
+				System.out.print("\nContact Exist\nFirst Name : ");
 			else {
 				check = false;
 			}
 		}
-		return mail;
-		
+		return name;
 	}
 
 	private void readContacts() { //Method to read all contacts
